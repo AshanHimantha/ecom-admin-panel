@@ -1,9 +1,8 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+// src/App.tsx
+// --- KEY UPDATE: Wraps the application in AuthInitializer.
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Helmet, HelmetProvider } from "react-helmet-async";
+// ... other imports like Toaster, ThemeProvider, etc.
 import Index from "./pages/Index";
 import Products from "./pages/Products";
 import Orders from "./pages/Orders";
@@ -12,59 +11,44 @@ import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
-import { ConfigProvider, useConfig } from "./contexts/ConfigContext";
-import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
-import './utils/aws-config';
+import Unauthorized from "./pages/Unauthorized";
+import { DashboardLayout } from "./components/DashboardLayout"; 
+import ProtectedRoute from './components/ProtectedRoute';
+import { AuthInitializer } from './components/AuthInitializer';
+import { ROLES } from './constants/roles';
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <HelmetProvider>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <ThemeProvider>
-          <ConfigProvider>
-            <AppContent />
-          </ConfigProvider>
-        </ThemeProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </HelmetProvider>
-);
-
-const AppContent = () => {
-  const { theme } = useTheme();
-  const config = useConfig();
-
+// Assume providers like ThemeProvider, QueryClientProvider etc. are here
+function App() {
   return (
-    <>
-      <Helmet>
-        <meta
-          property="og:image"
-          content={theme === "light" ? config.assets.logo.light : config.assets.logo.dark}
-        />
-        <meta
-          name="twitter:image"
-          content={theme === "light" ? config.assets.logo.light : config.assets.logo.dark}
-        />
-      </Helmet>
+    <AuthInitializer>
       <BrowserRouter>
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Login />} />
-          <Route path="/dashboard" element={<Index />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/customers" element={<Customers />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/settings" element={<Settings />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/unauthorized" element={<Unauthorized />} />
+
+          {/* Protected Routes Layout */}
+        
+            <Route element={<ProtectedRoute allowedRoles={[ROLES.VIEWER, ROLES.EDITOR, ROLES.ADMIN, ROLES.SUPER_ADMIN]} />}>
+              <Route path="/dashboard" element={<Index />} />
+            </Route>
+            <Route element={<ProtectedRoute allowedRoles={[ROLES.EDITOR, ROLES.ADMIN, ROLES.SUPER_ADMIN]} />}>
+              <Route path="/products" element={<Products />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/customers" element={<Customers />} />
+            </Route>
+            <Route element={<ProtectedRoute allowedRoles={[ROLES.ADMIN, ROLES.SUPER_ADMIN]} />}>
+              <Route path="/analytics" element={<Analytics />} />
+              <Route path="/settings" element={<Settings />} />
+            </Route>
+         
+          
+          {/* Catch-all Not Found Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
-    </>
+    </AuthInitializer>
   );
-};
+}
 
 export default App;

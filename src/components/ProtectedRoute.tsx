@@ -1,43 +1,25 @@
-import { useEffect } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuthStore } from '@/store/authStore';
+// src/components/ProtectedRoute.tsx
+// Works with the roles array from Redux state.
 
-type Role =  'EMPLOYEE' | 'ADMIN';
+import { useSelector } from 'react-redux';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { RootState } from '../store/store';
+
 interface ProtectedRouteProps {
-  children: React.ReactNode;
-  requiredRole?: Role | Role[];
-  redirectTo?: string;
+  allowedRoles: string[];
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  children,
-  requiredRole,
-  redirectTo = '/signin'
-}) => {
-  const { isAuthenticated, getUserRole } = useAuthStore();
+const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
+  const { isAuthenticated, roles } = useSelector((state: RootState) => state.auth);
   const location = useLocation();
 
-  // Check if user is authenticated
-  if (!isAuthenticated()) {
-    return <Navigate to={redirectTo} state={{ from: location }} replace />;
+  if (!isAuthenticated) {
+    return <Navigate to="/" state={{ from: location }} replace />;
   }
+  
+  const isAuthorized = roles.some(userRole => allowedRoles.includes(userRole));
 
-  // Check if user has required role (support string or array)
-  if (requiredRole) {
-    const userRole = getUserRole();
-    const requiredRoles = Array.isArray(requiredRole) ? requiredRole : [requiredRole];
-    if (!requiredRoles.includes(userRole)) {
-      // If user role is NONE, redirect to KYC
-      if (userRole === 'NONE') {
-        return <Navigate to="/kyc" replace />;
-      }
-      // Otherwise, redirect to appropriate dashboard based on their primary role
-      const dashboardPath = userRole === 'CUSTOMER' ? '/customer/dashboard' : '/admin/dashboard';
-      return <Navigate to={dashboardPath} replace />;
-    }
-  }
-
-  return <>{children}</>;
+  return isAuthorized ? <Outlet /> : <Navigate to="/unauthorized" replace />;
 };
 
 export default ProtectedRoute;
