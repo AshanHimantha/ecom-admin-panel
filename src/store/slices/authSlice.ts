@@ -34,6 +34,7 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async ({ username, password }: any, { rejectWithValue }) => {
     try {
+      console.log('🔐 Attempting login for user:', username);
       const { isSignedIn, nextStep } = await signIn({ username, password });
       if (!isSignedIn) {
         return rejectWithValue(`Sign-in requires next step: ${nextStep.signInStep}`);
@@ -52,8 +53,16 @@ export const loginUser = createAsyncThunk(
          roles.push(attributes['custom:role']);
       }
 
+      console.log('✅ Login successful:', {
+        username: currentUser.username,
+        userId: currentUser.userId,
+        roles: roles,
+        attributes: attributes
+      });
+
       return { user: currentUser, userAttributes: attributes, roles: roles };
     } catch (error: any) {
+      console.error('❌ Login failed:', error.message);
       return rejectWithValue(error.message || 'An unknown error occurred.');
     }
   }

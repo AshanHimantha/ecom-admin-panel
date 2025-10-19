@@ -19,6 +19,7 @@ export function AuthInitializer({ children }: { children: ReactNode }) {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
+        console.log('🔄 Checking authentication status...');
         const currentUser = await getCurrentUser();
         const attributes = await fetchUserAttributes();
         const session = await fetchAuthSession();
@@ -28,9 +29,16 @@ export function AuthInitializer({ children }: { children: ReactNode }) {
           roles = (accessToken.payload['cognito:groups'] as string[]) || [];
         }
 
+        console.log('✅ Authentication session restored:', {
+          username: currentUser.username,
+          userId: currentUser.userId,
+          roles: roles,
+          attributes: attributes
+        });
+
         dispatch(setAuthSession({ user: currentUser, userAttributes: attributes, roles }));
       } catch (error) {
-        console.log("No active session found.");
+        console.log("❌ No active session found:", error);
       } finally {
         setIsLoading(false);
       }

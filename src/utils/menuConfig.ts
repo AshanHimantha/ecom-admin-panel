@@ -18,15 +18,16 @@ export const menuConfig: MenuItem[] = [
     title: "Overview", 
     url: "/dashboard", // Changed from "/" to match our routing
     icon: LayoutDashboard,
-    roles: [ROLES.VIEWER, ROLES.EDITOR, ROLES.ADMIN, ROLES.SUPER_ADMIN], // Everyone can see
+    roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN], // Everyone can see
   },
   {
     title: "Products",
     url: "/products",
     icon: Package,
-    roles: [ROLES.EDITOR, ROLES.ADMIN, ROLES.SUPER_ADMIN], // Only editors and above
+    roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN], // Only editors and above
     subItems: [
       { title: "All Products", url: "/products", icon: Package },
+      { title: "Categories", url: "/products/categories", icon: Package , roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN]},
       // You can add more specific routes and roles here later
       // { title: "Categories", url: "/products/categories", icon: Package, roles: [ROLES.ADMIN] },
     ]
@@ -35,7 +36,7 @@ export const menuConfig: MenuItem[] = [
     title: "Orders",
     url: "/orders",
     icon: ShoppingCart,
-    roles: [ROLES.EDITOR, ROLES.ADMIN, ROLES.SUPER_ADMIN], // Only editors and above
+    roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN], // Only editors and above
     subItems: [
       { title: "All Orders", url: "/orders", icon: ShoppingCart },
     ]
@@ -44,18 +45,18 @@ export const menuConfig: MenuItem[] = [
     title: "Customers",
     url: "/customers",
     icon: Users,
-    roles: [ROLES.EDITOR, ROLES.ADMIN, ROLES.SUPER_ADMIN], // Only editors and above
+    roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN], // Only editors and above
   },
   { 
     title: "Analytics", 
     url: "/analytics", 
     icon: BarChart3,
-    roles: [ROLES.ADMIN, ROLES.SUPER_ADMIN], // Only admins can see
+    roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN], // Only admins can see
   },
   { 
     title: "Settings", 
     url: "/settings", 
     icon: Settings,
-    roles: [ROLES.ADMIN, ROLES.SUPER_ADMIN], // Only admins can see
+    roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN], // Only admins can see
   },
 ];

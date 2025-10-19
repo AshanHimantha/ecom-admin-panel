@@ -12,10 +12,10 @@ import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Unauthorized from "./pages/Unauthorized";
-import { DashboardLayout } from "./components/DashboardLayout"; 
-import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedDashboardLayout from './components/ProtectedDashboardLayout';
+import RoleBasedRoute from './components/RoleBasedRoute';
 import { AuthInitializer } from './components/AuthInitializer';
-import { ROLES } from './constants/roles';
+import { ROLES } from './constants/ROLES';
 
 // Assume providers like ThemeProvider, QueryClientProvider etc. are here
 function App() {
@@ -27,21 +27,26 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
 
-          {/* Protected Routes Layout */}
-        
-            <Route element={<ProtectedRoute allowedRoles={[ROLES.VIEWER, ROLES.EDITOR, ROLES.ADMIN, ROLES.SUPER_ADMIN]} />}>
+          {/* Protected Routes with Dashboard Layout */}
+          <Route element={<ProtectedDashboardLayout />}>
+            {/* Routes accessible to all authenticated users with basic roles */}
+            <Route element={<RoleBasedRoute allowedRoles={[ROLES.VIEWER, ROLES.EDITOR, ROLES.ADMIN, ROLES.SUPER_ADMIN, ROLES.DATA_STEWARD, ROLES.SUPPLIER]} />}>
               <Route path="/dashboard" element={<Index />} />
             </Route>
-            <Route element={<ProtectedRoute allowedRoles={[ROLES.EDITOR, ROLES.ADMIN, ROLES.SUPER_ADMIN]} />}>
+            
+            {/* Routes for editors and above */}
+            <Route element={<RoleBasedRoute allowedRoles={[ROLES.EDITOR, ROLES.ADMIN, ROLES.SUPER_ADMIN, ROLES.DATA_STEWARD, ROLES.SUPPLIER]} />}>
               <Route path="/products" element={<Products />} />
               <Route path="/orders" element={<Orders />} />
               <Route path="/customers" element={<Customers />} />
             </Route>
-            <Route element={<ProtectedRoute allowedRoles={[ROLES.ADMIN, ROLES.SUPER_ADMIN]} />}>
+            
+            {/* Routes for admins only */}
+            <Route element={<RoleBasedRoute allowedRoles={[ROLES.ADMIN, ROLES.SUPER_ADMIN]} />}>
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/settings" element={<Settings />} />
             </Route>
-         
+          </Route>
           
           {/* Catch-all Not Found Route */}
           <Route path="*" element={<NotFound />} />
