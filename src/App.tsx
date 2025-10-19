@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { ConfigProvider, useConfig } from "./contexts/ConfigContext";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
+import './utils/aws-config';
 
 const queryClient = new QueryClient();
 
