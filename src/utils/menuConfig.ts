@@ -1,5 +1,3 @@
-// src/config/menuConfig.ts
-
 import { LayoutDashboard, Package, ShoppingCart, Users, Settings, BarChart3 } from "lucide-react";
 import { ROLES } from "@/constants/roles";
 
@@ -42,10 +40,16 @@ export const menuConfig: MenuItem[] = [
     ]
   },
   {
-    title: "Customers",
-    url: "/customers",
+    title: "Users",
+    url: "/users",
     icon: Users,
-    roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN], // Only editors and above
+    roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN],
+    subItems: [
+      { title: "All Users", url: "/users", icon: Users },
+      { title: "Employees", url: "/users/employees", icon: Users },
+      // You can add more specific routes and roles here later
+      // { title: "Categories", url: "/products/categories", icon: Package, roles: [ROLES.ADMIN] },
+    ] // Only editors and above
   },
   { 
     title: "Analytics", 
