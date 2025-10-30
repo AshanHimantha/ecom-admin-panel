@@ -15,6 +15,7 @@ import { AuthInitializer } from './components/AuthInitializer';
 import { ROLES } from './constants/ROLES';
 import Users from "./pages/Users";
 import { Toaster } from "@/components/ui/toaster";
+import Categories from "./pages/Categories";
 
 function App() {
   return (
@@ -28,13 +29,14 @@ function App() {
           {/* Protected Routes with Dashboard Layout */}
           <Route element={<ProtectedDashboardLayout />}>
             {/* Routes accessible to all authenticated users with basic roles */}
-            <Route element={<RoleBasedRoute allowedRoles={[ROLES.VIEWER, ROLES.EDITOR, ROLES.ADMIN, ROLES.SUPER_ADMIN, ROLES.DATA_STEWARD, ROLES.SUPPLIER]} />}>
+            <Route element={<RoleBasedRoute allowedRoles={[ROLES.SUPER_ADMIN, ROLES.DATA_STEWARD]} />}>
               <Route path="/dashboard" element={<Index />} />
             </Route>
             
             {/* Routes for editors and above */}
-            <Route element={<RoleBasedRoute allowedRoles={[ ROLES.SUPER_ADMIN, ROLES.DATA_STEWARD, ROLES.SUPPLIER]} />}>
+            <Route element={<RoleBasedRoute allowedRoles={[ ROLES.SUPER_ADMIN, ROLES.DATA_STEWARD]} />}>
               <Route path="/products" element={<Products />} />
+              <Route path="/products/categories" element={<Categories />} />
               <Route path="/orders" element={<Orders />} />
               <Route path="/users" element={<Users />} />
               <Route path="/users/employees" element={<Customers />} />
