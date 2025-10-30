@@ -24,6 +24,13 @@ export interface UserCreateDTO {
   phone?: string;
 }
 
+export interface EmployeeCreateDTO {
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+}
+
 export interface UserUpdateDTO {
   firstName?: string;
   lastName?: string;
@@ -134,7 +141,7 @@ export class UsersAPI {
   /**
    * Create new user
    */
-  static async createUser(user: UserCreateDTO): Promise<UserResponse> {
+  static async createUser(user: UserCreateDTO | EmployeeCreateDTO): Promise<UserResponse> {
     const response = await apiClient.post<UserResponse>(this.baseUrl, user);
     return response.data;
   }

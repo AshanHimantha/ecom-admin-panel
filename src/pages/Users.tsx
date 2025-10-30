@@ -169,10 +169,7 @@ export default function Users() {
             <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
-          <Button>
-            <UserPlus className="h-4 w-4 mr-2" />
-            Add User
-          </Button>
+         
         </div>
       </div>
 
@@ -187,7 +184,6 @@ export default function Users() {
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Email Verified</TableHead>
               <TableHead>Created Date</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -221,18 +217,7 @@ export default function Users() {
                       {user.status}
                     </Badge>
                   </TableCell>
-                 
-                  <TableCell>
-                    {user.emailVerified ? (
-                      <Badge variant="default" className="bg-green-500">
-                        Verified
-                      </Badge>
-                    ) : (
-                      <Badge variant="secondary">
-                        Not Verified
-                      </Badge>
-                    )}
-                  </TableCell>
+
                     <TableCell className="whitespace-nowrap">{formatDate(user.createdDate)}</TableCell>
                     <TableCell>
                       <Button

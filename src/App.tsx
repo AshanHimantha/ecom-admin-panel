@@ -14,6 +14,7 @@ import RoleBasedRoute from './components/RoleBasedRoute';
 import { AuthInitializer } from './components/AuthInitializer';
 import { ROLES } from './constants/ROLES';
 import Users from "./pages/Users";
+import { Toaster } from "@/components/ui/toaster";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
           {/* Catch-all Not Found Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <Toaster />
       </BrowserRouter>
     </AuthInitializer>
   );
