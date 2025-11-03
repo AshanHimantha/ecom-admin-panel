@@ -1,56 +1,59 @@
 import { apiClient } from '../lib/apiClient';
 
 // Types for Products API
+export interface Category {
+  id: number;
+  name: string;
+  description: string;
+}
+
 export interface Product {
   id: number;
   name: string;
-  description?: string;
-  price: number;
-  stock: number;
-  category?: string;
-  imageUrl?: string;
-  sku?: string;
+  description: string;
+  sellingPrice: number;
+  producerInfo: string;
+  stockCount: number;
+  status: string;
+  category: Category;
   createdAt: string;
   updatedAt: string;
+  imageUrls: string[];
 }
 
-export interface ProductCreateDTO {
-  name: string;
-  description?: string;
-  price: number;
-  stock: number;
-  category?: string;
-  imageUrl?: string;
-  sku?: string;
-}
-
-export interface ProductUpdateDTO {
-  name?: string;
-  description?: string;
-  price?: number;
-  stock?: number;
-  category?: string;
-  imageUrl?: string;
-  sku?: string;
+export interface ProductsData {
+  content: Product[];
+  currentPage: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+  last: boolean;
 }
 
 export interface ProductsResponse {
-  data: Product[];
   success: boolean;
-  count: number;
-  timestamp: number;
+  data: ProductsData;
 }
 
 export interface ProductResponse {
-  data: Product;
   success: boolean;
-  timestamp: number;
+  data: Product;
 }
 
 export interface ApiResponse {
-  message: string;
   success: boolean;
-  timestamp: number;
+  message: string;
+}
+
+export interface CreateProductPayload {
+  name: string;
+  categoryId: number;
+  sellingPrice: number;
+  unitCost: number;
+  stockCount: number;
+  description: string;
+  producerInfo: string;
+  imageUrls: string[];
 }
 
 /**
@@ -64,7 +67,7 @@ export class ProductsAPI {
    * Get all products
    */
   static async getAllProducts(): Promise<ProductsResponse> {
-    const response = await apiClient.get<ProductsResponse>(this.baseUrl);
+    const response = await apiClient.get<ProductsResponse>(this.baseUrl + "/admin");
     return response.data;
   }
 
@@ -72,23 +75,15 @@ export class ProductsAPI {
    * Get product by ID
    */
   static async getProductById(id: number): Promise<ProductResponse> {
-    const response = await apiClient.get<ProductResponse>(`${this.baseUrl}/${id}`);
+    const response = await apiClient.get<ProductResponse>(`${this.baseUrl}/admin/${id}`);
     return response.data;
   }
 
   /**
    * Create new product
    */
-  static async createProduct(product: ProductCreateDTO): Promise<ProductResponse> {
+  static async createProduct(product: CreateProductPayload): Promise<ProductResponse> {
     const response = await apiClient.post<ProductResponse>(this.baseUrl, product);
-    return response.data;
-  }
-
-  /**
-   * Update product
-   */
-  static async updateProduct(id: number, product: ProductUpdateDTO): Promise<ProductResponse> {
-    const response = await apiClient.put<ProductResponse>(`${this.baseUrl}/${id}`, product);
     return response.data;
   }
 
@@ -97,16 +92,6 @@ export class ProductsAPI {
    */
   static async deleteProduct(id: number): Promise<ApiResponse> {
     const response = await apiClient.delete<ApiResponse>(`${this.baseUrl}/${id}`);
-    return response.data;
-  }
-
-  /**
-   * Search products
-   */
-  static async searchProducts(query: string): Promise<ProductsResponse> {
-    const response = await apiClient.get<ProductsResponse>(`${this.baseUrl}/search`, {
-      params: { q: query }
-    });
     return response.data;
   }
 }

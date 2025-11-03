@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { UserPlus, Loader2, RefreshCw, Power, Pencil } from "lucide-react";
 import {
   Table,
@@ -536,6 +537,7 @@ export default function Employees() {
               <TableHead>Phone</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Groups</TableHead>
+              <TableHead>Enabled</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -583,6 +585,18 @@ export default function Employees() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
+                      <Switch
+                        checked={employee.status === 'ENABLED'}
+                        onCheckedChange={() => handleToggleUserStatus(employee)}
+                        disabled={togglingUserId === employee.id}
+                      />
+                      {togglingUserId === employee.id && (
+                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
                       <Button
                         variant="outline"
                         size="sm"
@@ -590,21 +604,6 @@ export default function Employees() {
                       >
                         <Pencil className="h-4 w-4 mr-1" />
                         Edit
-                      </Button>
-                      <Button
-                        variant={employee.status === 'ENABLED' ? "destructive" : "default"}
-                        size="sm"
-                        onClick={() => handleToggleUserStatus(employee)}
-                        disabled={togglingUserId === employee.id}
-                      >
-                        {togglingUserId === employee.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <>
-                            <Power className="h-4 w-4 mr-1" />
-                            {employee.status === 'ENABLED' ? 'Disable' : 'Enable'}
-                          </>
-                        )}
                       </Button>
                     </div>
                   </TableCell>
