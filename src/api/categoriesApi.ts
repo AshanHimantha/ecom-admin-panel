@@ -1,11 +1,33 @@
 import { apiClient } from '../lib/apiClient';
 
 // Types for Categories API
+export interface CategoryType {
+  id: number;
+  name: string;
+  sizeOptions: string[];
+}
+
 export interface Category {
   id: number;
   name: string;
   description?: string;
-  active: boolean;
+  status: string; // "ACTIVE" or "INACTIVE"
+  imageUrl?: string;
+  categoryType?: CategoryType;
+}
+
+export interface CreateCategoryPayload {
+  name: string;
+  description?: string;
+  categoryTypeId?: number;
+  image?: File;
+}
+
+export interface UpdateCategoryPayload {
+  name?: string;
+  description?: string;
+  categoryTypeId?: number;
+  image?: File;
 }
 
 export interface CategoriesResponse {
@@ -47,18 +69,53 @@ export class CategoriesAPI {
   }
 
   /**
-   * Create new category
+   * Create new category with FormData (supports image upload)
+   * Uses multipart/form-data endpoint
    */
-  static async createCategory(category: Partial<Category>): Promise<CategoryResponse> {
-    const response = await apiClient.post<CategoryResponse>(this.baseUrl, category);
+  static async createCategory(payload: CreateCategoryPayload): Promise<CategoryResponse> {
+    const formData = new FormData();
+    formData.append('name', payload.name);
+    
+    if (payload.description) {
+      formData.append('description', payload.description);
+    }
+    
+    if (payload.categoryTypeId) {
+      formData.append('categoryTypeId', payload.categoryTypeId.toString());
+    }
+    
+    if (payload.image) {
+      formData.append('image', payload.image);
+    }
+
+    const response = await apiClient.post<CategoryResponse>(this.baseUrl, formData);
     return response.data;
   }
 
   /**
-   * Update category
+   * Update category with FormData (supports image upload)
+   * Uses multipart/form-data endpoint
    */
-  static async updateCategory(id: string, category: Partial<Category>): Promise<CategoryResponse> {
-    const response = await apiClient.put<CategoryResponse>(`${this.baseUrl}/${id}`, category);
+  static async updateCategory(id: string, payload: UpdateCategoryPayload): Promise<CategoryResponse> {
+    const formData = new FormData();
+    
+    if (payload.name) {
+      formData.append('name', payload.name);
+    }
+    
+    if (payload.description !== undefined) {
+      formData.append('description', payload.description);
+    }
+    
+    if (payload.categoryTypeId) {
+      formData.append('categoryTypeId', payload.categoryTypeId.toString());
+    }
+    
+    if (payload.image) {
+      formData.append('image', payload.image);
+    }
+
+    const response = await apiClient.put<CategoryResponse>(`${this.baseUrl}/${id}`, formData);
     return response.data;
   }
 

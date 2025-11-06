@@ -24,6 +24,11 @@ apiClient.interceptors.request.use(
         // Attach the JWT token from Cognito to the Authorization header
         config.headers.Authorization = `Bearer ${token}`;
       }
+
+      // Remove Content-Type header for FormData to let browser set it with boundary
+      if (config.data instanceof FormData) {
+        delete config.headers['Content-Type'];
+      }
     } catch (error) {
       // If no session exists, continue without token
       console.warn('No active Amplify session found:', error);

@@ -16,6 +16,7 @@ import { ROLES } from './constants/ROLES';
 import Users from "./pages/Users";
 import { Toaster } from "@/components/ui/toaster";
 import Categories from "./pages/Categories";
+import CategoryTypes from "./pages/CategoryTypes";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
             <Route element={<RoleBasedRoute allowedRoles={[ ROLES.SUPER_ADMIN, ROLES.DATA_STEWARD]} />}>
               <Route path="/products" element={<Products />} />
               <Route path="/products/categories" element={<Categories />} />
+              <Route path="/products/category-types" element={<CategoryTypes />} />
               <Route path="/orders" element={<Orders />} />
               <Route path="/users" element={<Users />} />
               <Route path="/users/employees" element={<Customers />} />

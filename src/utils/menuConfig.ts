@@ -26,8 +26,7 @@ export const menuConfig: MenuItem[] = [
     subItems: [
       { title: "All Products", url: "/products", icon: Package },
       { title: "Categories", url: "/products/categories", icon: Package , roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN]},
-      // You can add more specific routes and roles here later
-      // { title: "Categories", url: "/products/categories", icon: Package, roles: [ROLES.ADMIN] },
+      { title: "Category Types", url: "/products/category-types", icon: Package , roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN]},
     ]
   },
   {
