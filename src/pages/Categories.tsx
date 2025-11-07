@@ -2,8 +2,14 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Loader2, RefreshCw, Pencil, Trash2, Upload, X } from "lucide-react";
+import { Plus, Loader2, RefreshCw, Pencil, Trash2, Upload, X, Info } from "lucide-react";
 import { useRef } from "react";
+import AddCategoryDialog from "@/components/AddCategoryDialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Table,
   TableBody,
@@ -57,18 +63,10 @@ export default function Categories() {
   const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>("");
   const [editSelectedImage, setEditSelectedImage] = useState<File | null>(null);
   const [editImagePreview, setEditImagePreview] = useState<string>("");
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    categoryTypeId: "",
-  });
   const [editFormData, setEditFormData] = useState({
     name: "",
     description: "",
@@ -122,15 +120,14 @@ export default function Categories() {
 
   const fetchCategoryTypes = async () => {
     try {
-      console.log('📡 Fetching category types');
+      
       const response = await CategoryTypesAPI.getAllCategoryTypes();
-      console.log('✅ Category Types API response:', response);
+
 
       if (response.success && Array.isArray(response.data)) {
         setCategoryTypes(response.data);
       }
     } catch (error: any) {
-      console.error('❌ Error fetching category types:', error);
     }
   };
 
@@ -145,45 +142,6 @@ export default function Categories() {
   const handleDeleteClick = (category: Category) => {
     setCategoryToDelete(category);
     setIsAlertOpen(true);
-  };
-
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        toast({
-          title: "Invalid File",
-          description: "Please select an image file",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Validate file size (5MB max)
-      if (file.size > 5 * 1024 * 1024) {
-        toast({
-          title: "File Too Large",
-          description: "Image must be less than 5MB",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      setSelectedImage(file);
-
-      // Create preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleRemoveImage = () => {
-    setSelectedImage(null);
-    setImagePreview("");
   };
 
   const handleEditImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -243,13 +201,7 @@ export default function Categories() {
       setCategories(prev => prev.filter(cat => cat.id !== categoryToDelete.id));
       
     } catch (error: any) {
-      console.error('❌ Error deleting category:', error);
-      console.error('Error details:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-        statusText: error.response?.statusText,
-      });
+      
       
       const errorMessage = error.response?.data?.response?.message
         || error.response?.data?.message
@@ -266,114 +218,6 @@ export default function Categories() {
       setDeletingId(null);
       setIsAlertOpen(false);
       setCategoryToDelete(null);
-    }
-  };
-
-  const handleCreateCategory = async () => {
-    // Validation
-    if (!formData.name.trim()) {
-      toast({
-        title: "Validation Error",
-        description: "Category name is required (min 3, max 100 characters)",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (formData.name.trim().length < 3 || formData.name.trim().length > 100) {
-      toast({
-        title: "Validation Error",
-        description: "Category name must be between 3 and 100 characters",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (formData.description && formData.description.length > 255) {
-      toast({
-        title: "Validation Error",
-        description: "Description must be less than 255 characters",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!formData.categoryTypeId) {
-      toast({
-        title: "Validation Error",
-        description: "Category type is required",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      setIsCreating(true);
-      
-      const payload: any = {
-        name: formData.name.trim(),
-        categoryTypeId: parseInt(formData.categoryTypeId),
-      };
-
-      if (formData.description?.trim()) {
-        payload.description = formData.description.trim();
-      }
-
-      if (selectedImage) {
-        payload.image = selectedImage;
-      }
-
-      console.log('📤 Creating category with payload:', {
-        name: payload.name,
-        description: payload.description,
-        categoryTypeId: payload.categoryTypeId,
-        image: selectedImage ? `${selectedImage.name} (${(selectedImage.size / 1024).toFixed(2)} KB)` : 'No image'
-      });
-      
-      const response = await CategoriesAPI.createCategory(payload);
-      
-      console.log('✅ Category created:', response);
-      
-      toast({
-        title: "Success",
-        description: "Category created successfully",
-      });
-      
-      // Reset form and close dialog
-      setFormData({
-        name: "",
-        description: "",
-        categoryTypeId: "",
-      });
-      setSelectedImage(null);
-      setImagePreview("");
-      setIsDialogOpen(false);
-      
-      // Refresh the category list
-      await fetchCategories();
-      
-    } catch (error: any) {
-      console.error('❌ Error creating category:', error);
-      console.error('Error details:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-        statusText: error.response?.statusText,
-      });
-      
-      const errorMessage = error.response?.data?.response?.message
-        || error.response?.data?.message
-        || error.response?.data?.error
-        || error.message
-        || "Failed to create category";
-      
-      toast({
-        title: "Error Creating Category",
-        description: `${errorMessage}${error.response?.status ? ` (${error.response.status})` : ''}`,
-        variant: "destructive",
-      });
-    } finally {
-      setIsCreating(false);
     }
   };
 
@@ -431,7 +275,7 @@ export default function Categories() {
       
       const response = await CategoriesAPI.updateCategory(selectedCategory.id.toString(), payload);
       
-      console.log('✅ Category updated:', response);
+  
       
       toast({
         title: "Success",
@@ -443,10 +287,8 @@ export default function Categories() {
       setEditSelectedImage(null);
       setEditImagePreview("");
       
-      // Refresh the category list
-      console.log('🔄 Refreshing categories after update...');
       await fetchCategories();
-      console.log('✅ Categories refreshed');
+    
       
     } catch (error: any) {
       console.error('❌ Error updating category:', error);
@@ -475,26 +317,18 @@ export default function Categories() {
 
   const handleStatusToggle = async (category: Category) => {
     const newStatus = category.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
+    const originalStatus = category.status;
     
     try {
       setUpdatingStatusId(category.id);
-      console.log(`🔄 Toggling category status:`, {
+      console.log(`🔄 PATCH request - Toggling category status:`, {
         id: category.id,
         name: category.name,
         currentStatus: category.status,
         newStatus
       });
       
-      await CategoriesAPI.updateCategory(category.id.toString(), {
-        status: newStatus
-      });
-      
-      toast({
-        title: "Success",
-        description: `Category "${category.name}" is now ${newStatus.toLowerCase()}`,
-      });
-      
-      // Update local state
+      // Optimistic UI update
       setCategories(prev => 
         prev.map(cat => 
           cat.id === category.id 
@@ -502,6 +336,18 @@ export default function Categories() {
             : cat
         )
       );
+
+      // Call the PATCH API with only ID and status
+      await CategoriesAPI.updateCategoryStatus(category.id.toString(), newStatus);
+      
+      
+      toast({
+        title: "Success",
+        description: `Category "${category.name}" is now ${newStatus.toLowerCase()}`,
+      });
+      
+      // Refetch to ensure UI is in sync with server
+      await fetchCategories();
       
     } catch (error: any) {
       console.error('❌ Error updating category status:', error);
@@ -511,6 +357,13 @@ export default function Categories() {
         status: error.response?.status,
         statusText: error.response?.statusText,
       });
+
+      // Rollback UI on failure
+      setCategories(prev =>
+        prev.map(cat =>
+          cat.id === category.id ? { ...cat, status: originalStatus } : cat
+        )
+      );
       
       const errorMessage = error.response?.data?.response?.message
         || error.response?.data?.message
@@ -553,153 +406,13 @@ export default function Categories() {
         </div>
       </div>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Add New Category</DialogTitle>
-            <DialogDescription>
-              Create a new product category. Fill in the required information below.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="name">
-                Category Name <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="name"
-                placeholder="Enter category name (3-100 characters)"
-                value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                disabled={isCreating}
-              />
-              <p className="text-xs text-muted-foreground">
-                {formData.name.length}/100 characters
-              </p>
-            </div>
-            
-            <div className="grid gap-2">
-              <Label htmlFor="description">
-                Description <span className="text-muted-foreground">(Optional, max 255 chars)</span>
-              </Label>
-              <Textarea
-                id="description"
-                placeholder="Enter category description"
-                value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                rows={3}
-                disabled={isCreating}
-              />
-              <p className="text-xs text-muted-foreground">
-                {formData.description.length}/255 characters
-              </p>
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="categoryType">
-                Category Type <span className="text-red-500">*</span>
-              </Label>
-              <Select
-                value={formData.categoryTypeId}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, categoryTypeId: value }))}
-                disabled={isCreating}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select category type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categoryTypes.map((type) => (
-                    <SelectItem key={type.id} value={type.id.toString()}>
-                      {type.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="image">
-                Category Image <span className="text-muted-foreground">(Optional, max 5MB)</span>
-              </Label>
-              
-              {!imagePreview ? (
-                <div className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-6 text-center hover:border-gray-400 dark:hover:border-gray-600 transition-colors">
-                  <input
-                    type="file"
-                    id="image"
-                    accept="image/*"
-                    onChange={handleImageSelect}
-                    className="hidden"
-                    disabled={isCreating}
-                  />
-                  <label htmlFor="image" className="cursor-pointer flex flex-col items-center gap-2">
-                    <Upload className="h-8 w-8 text-gray-400" />
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Click to upload category image
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-500">
-                      PNG, JPG, GIF up to 5MB
-                    </p>
-                  </label>
-                </div>
-              ) : (
-                <div className="relative border rounded-lg p-2">
-                  <img
-                    src={imagePreview}
-                    alt="Preview"
-                    className="w-full h-48 object-cover rounded"
-                  />
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="icon"
-                    className="absolute top-3 right-3"
-                    onClick={handleRemoveImage}
-                    disabled={isCreating}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                  {selectedImage && (
-                    <p className="text-xs text-muted-foreground mt-2">
-                      {selectedImage.name} ({(selectedImage.size / 1024).toFixed(2)} KB)
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-          
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setIsDialogOpen(false);
-                setFormData({
-                  name: "",
-                  description: "",
-                  categoryTypeId: "",
-                });
-                setSelectedImage(null);
-                setImagePreview("");
-              }}
-              disabled={isCreating}
-            >
-              Cancel
-            </Button>
-            <Button onClick={handleCreateCategory} disabled={isCreating}>
-              {isCreating ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Creating...
-                </>
-              ) : (
-                "Create Category"
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <AddCategoryDialog
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        onSuccess={fetchCategories}
+        categoryTypes={categoryTypes}
+        onCategoryTypesRefresh={fetchCategoryTypes}
+      />
 
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
@@ -901,20 +614,52 @@ export default function Categories() {
                   </TableCell>
                   <TableCell>
                     {category.categoryType ? (
-                      <div className="space-y-1">
+                      <div className="space-y-2">
                         <p className="font-medium text-sm">{category.categoryType.name}</p>
-                        <div className="flex flex-wrap gap-1">
-                          {category.categoryType.sizeOptions.slice(0, 3).map((size, index) => (
-                            <Badge key={index} variant="outline" className="text-xs">
+                        <div className="flex flex-wrap gap-1 items-center">
+                          {category.categoryType.sizeOptions.slice(0, 4).map((size, index) => (
+                            <Badge key={index} variant="outline" className="text-xs px-2 py-0.5">
                               {size}
                             </Badge>
                           ))}
-                          {category.categoryType.sizeOptions.length > 3 && (
-                            <Badge variant="outline" className="text-xs">
-                              +{category.categoryType.sizeOptions.length - 3}
-                            </Badge>
+                          {category.categoryType.sizeOptions.length > 4 && (
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Badge 
+                                  variant="secondary" 
+                                  className="text-xs px-2 py-0.5 cursor-pointer hover:bg-secondary/80 transition-colors"
+                                >
+                                  +{category.categoryType.sizeOptions.length - 4} more
+                                </Badge>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-80" align="start">
+                                <div className="space-y-2">
+                                  <div className="flex items-center gap-2">
+                                    <Info className="h-4 w-4 text-muted-foreground" />
+                                    <h4 className="font-semibold text-sm">All Size Options</h4>
+                                  </div>
+                                  <p className="text-xs text-muted-foreground">
+                                    {category.categoryType.name} - {category.categoryType.sizeOptions.length} sizes
+                                  </p>
+                                  <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto">
+                                    {category.categoryType.sizeOptions.map((size, index) => (
+                                      <Badge 
+                                        key={index} 
+                                        variant="outline" 
+                                        className="text-xs px-2.5 py-1"
+                                      >
+                                        {size}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
                           )}
                         </div>
+                        <p className="text-xs text-muted-foreground">
+                          {category.categoryType.sizeOptions.length} size{category.categoryType.sizeOptions.length !== 1 ? 's' : ''}
+                        </p>
                       </div>
                     ) : (
                       <span className="text-muted-foreground text-sm">-</span>
@@ -927,9 +672,7 @@ export default function Categories() {
                         onCheckedChange={() => handleStatusToggle(category)}
                         disabled={updatingStatusId === category.id}
                       />
-                      <Badge variant={category.status === 'ACTIVE' ? "default" : "secondary"}>
-                        {category.status === 'ACTIVE' ? 'Active' : 'Inactive'}
-                      </Badge>
+                     
                     </div>
                   </TableCell>
                   <TableCell>

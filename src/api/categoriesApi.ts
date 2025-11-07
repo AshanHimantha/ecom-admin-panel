@@ -120,6 +120,23 @@ export class CategoriesAPI {
   }
 
   /**
+   * Update category status only using PATCH
+   * @param id - The category ID
+   * @param status - The new status (ACTIVE or INACTIVE)
+   */
+  static async updateCategoryStatus(id: string, status: 'ACTIVE' | 'INACTIVE'): Promise<CategoryResponse> {
+    try {
+      
+      const axiosResponse = await apiClient.patch<CategoryResponse>(`${this.baseUrl}/${id}/status`, { status });
+      
+      return axiosResponse.data;
+    } catch (error) {
+     
+      throw error;
+    }
+  }
+
+  /**
    * Delete category
    */
   static async deleteCategory(id: string): Promise<ApiResponse> {

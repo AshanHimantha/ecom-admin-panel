@@ -34,9 +34,17 @@ export default function AddCategoryTypeDialog({
 
   const handleAddSize = () => {
     const trimmedSize = currentSize.trim();
-    if (trimmedSize && !sizeOptions.includes(trimmedSize)) {
-      setSizeOptions([...sizeOptions, trimmedSize]);
-      setCurrentSize("");
+    if (trimmedSize) {
+      // Split by comma and process each size
+      const newSizes = trimmedSize
+        .split(',')
+        .map(size => size.trim())
+        .filter(size => size && !sizeOptions.includes(size));
+      
+      if (newSizes.length > 0) {
+        setSizeOptions([...sizeOptions, ...newSizes]);
+        setCurrentSize("");
+      }
     }
   };
 
@@ -167,7 +175,7 @@ export default function AddCategoryTypeDialog({
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g., Pants Sizes - Waist"
+                placeholder="e.g., Clothing Sizes, Waist Sizes, Shoe Sizes"
                 disabled={loading}
               />
             </div>
@@ -178,7 +186,7 @@ export default function AddCategoryTypeDialog({
                 Size Options <span className="text-red-500">*</span>
               </Label>
               <p className="text-xs text-muted-foreground">
-                Add size options and drag them to set the correct order
+                Add size options (separate multiple with commas) and drag them to set the correct order
               </p>
               <div className="flex gap-2">
                 <Input
@@ -186,7 +194,7 @@ export default function AddCategoryTypeDialog({
                   value={currentSize}
                   onChange={(e) => setCurrentSize(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="e.g., 28, 30, 32..."
+                  placeholder="e.g., XS, S, M, L, XL or 6, 7, 8, 9, 10"
                   disabled={loading}
                 />
                 <Button

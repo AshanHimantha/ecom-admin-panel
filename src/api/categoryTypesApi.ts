@@ -76,7 +76,14 @@ export class CategoryTypesAPI {
    */
   static async updateCategoryTypeStatus(id: string, status: 'ACTIVE' | 'INACTIVE'): Promise<CategoryTypeResponse> {
     try {
-      const axiosResponse = await apiClient.patch<CategoryTypeResponse>(`${this.baseUrl}/${id}`, { status });
+      console.log('🔧 PATCH REQUEST:', {
+        method: 'PATCH',
+        url: `${this.baseUrl}/${id}/status`,
+        payload: { status }
+      });
+      
+      const axiosResponse = await apiClient.patch<CategoryTypeResponse>(`${this.baseUrl}/${id}/status`, { status });
+      
       console.log('📥 PATCH status response:', axiosResponse);
       return axiosResponse.data;
     } catch (error) {
