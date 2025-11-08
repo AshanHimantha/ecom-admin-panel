@@ -80,10 +80,11 @@ export class ProductsAPI {
   }
 
   /**
-   * Create new product
+   * Create new product with FormData (supports file upload)
+   * Note: Content-Type is automatically set by axios for FormData
    */
-  static async createProduct(product: CreateProductPayload): Promise<ProductResponse> {
-    const response = await apiClient.post<ProductResponse>(this.baseUrl, product);
+  static async createProduct(formData: FormData): Promise<ProductResponse> {
+    const response = await apiClient.post<ProductResponse>(this.baseUrl, formData);
     return response.data;
   }
 
