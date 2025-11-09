@@ -1,10 +1,20 @@
 import { apiClient } from '../lib/apiClient';
 
 // Types for Products API
+export interface CategoryType {
+  id: number;
+  name: string;
+  sizeOptions: string[];
+  status: string;
+}
+
 export interface Category {
   id: number;
   name: string;
-  description: string;
+  description: string | null;
+  imageUrl?: string | null;
+  categoryType?: CategoryType;
+  status: string;
 }
 
 export interface Product {
@@ -12,13 +22,15 @@ export interface Product {
   name: string;
   description: string;
   sellingPrice: number;
-  producerInfo: string;
-  stockCount: number;
+  producerInfo?: string;
+  stockCount?: number;
+  productType?: string;
   status: string;
   category: Category;
   createdAt: string;
   updatedAt: string;
   imageUrls: string[];
+  variants?: any[];
 }
 
 export interface ProductsData {

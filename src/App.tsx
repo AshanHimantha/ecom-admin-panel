@@ -17,6 +17,7 @@ import Users from "./pages/Users";
 import { Toaster } from "@/components/ui/toaster";
 import Categories from "./pages/Categories";
 import CategoryTypes from "./pages/CategoryTypes";
+import ManageVariants from "./pages/ManageVariants";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
             {/* Routes for editors and above */}
             <Route element={<RoleBasedRoute allowedRoles={[ ROLES.SUPER_ADMIN, ROLES.DATA_STEWARD]} />}>
               <Route path="/products" element={<Products />} />
+              <Route path="/products/:productId/variants" element={<ManageVariants />} />
               <Route path="/products/categories" element={<Categories />} />
               <Route path="/products/category-types" element={<CategoryTypes />} />
               <Route path="/orders" element={<Orders />} />

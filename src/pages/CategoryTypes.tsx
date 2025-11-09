@@ -58,10 +58,10 @@ export default function CategoryTypes() {
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message ||
-        "Failed to fetch category types";
+        "Failed to fetch category sizes";
 
       toast({
-        title: "Error Loading Category Types",
+        title: "Error Loading Category Sizes",
         description: `${errorMessage}${error.response?.status ? ` (${error.response.status})` : ''}`,
         variant: "destructive",
       });
@@ -169,9 +169,9 @@ export default function CategoryTypes() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight">Category Types</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">Category Sizes</h1>
           <p className="text-muted-foreground">
-            Manage category types and sizing options ({categoryTypes.length} type{categoryTypes.length !== 1 ? 's' : ''})
+            Manage category sizes options ({categoryTypes.length} size{categoryTypes.length !== 1 ? 's' : ''})
           </p>
         </div>
         <div className="flex gap-2">
@@ -181,7 +181,7 @@ export default function CategoryTypes() {
           </Button>
           <Button onClick={() => setIsAddDialogOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
-            Add Category Type
+            Add Category Size
           </Button>
         </div>
       </div>
@@ -189,7 +189,7 @@ export default function CategoryTypes() {
       <Card>
         <Table className="w-full">
           <TableCaption className="pb-5">
-            {loading ? 'Loading category types...' : `Showing ${categoryTypes.length} category type${categoryTypes.length !== 1 ? 's' : ''}`}
+            {loading ? 'Loading category Sizes...' : `Showing ${categoryTypes.length} category size${categoryTypes.length !== 1 ? 's' : ''}`}
           </TableCaption>
           <TableHeader>
             <TableRow>
@@ -205,13 +205,13 @@ export default function CategoryTypes() {
               <TableRow>
                 <TableCell colSpan={5} className="text-center py-8">
                   <Loader2 className="h-6 w-6 animate-spin mx-auto" />
-                  <p className="mt-2 text-muted-foreground">Loading category types...</p>
+                  <p className="mt-2 text-muted-foreground">Loading category Sizes...</p>
                 </TableCell>
               </TableRow>
             ) : categoryTypes.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="text-center py-8">
-                  <p className="text-muted-foreground">No category types found.</p>
+                  <p className="text-muted-foreground">No category Sizes found.</p>
                 </TableCell>
               </TableRow>
             ) : (

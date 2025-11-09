@@ -187,9 +187,9 @@ export default function AddProductDialog({
 
   const fetchCategoryTypes = async () => {
     try {
-      console.log('📡 Fetching category types');
+
       const response = await CategoryTypesAPI.getAllCategoryTypes();
-      console.log('✅ Category types API response:', response);
+
 
       if (response.success && Array.isArray(response.data)) {
         setCategoryTypes(response.data);
@@ -198,14 +198,9 @@ export default function AddProductDialog({
         setCategoryTypes([]);
       }
     } catch (error: any) {
-      console.error('❌ Error fetching category types:', error);
       const errorMessage = error.response?.data?.message
-        || error.response?.data?.error
-        || error.message
-        || "Failed to fetch category types";
-
       toast({
-        title: "Error Loading Category Types",
+        title: "Error Loading Category Sizes",
         description: errorMessage,
         variant: "destructive",
       });

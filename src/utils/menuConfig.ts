@@ -26,7 +26,7 @@ export const menuConfig: MenuItem[] = [
     subItems: [
       { title: "All Products", url: "/products", icon: Package },
       { title: "Categories", url: "/products/categories", icon: Package , roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN]},
-      { title: "Category Types", url: "/products/category-types", icon: Package , roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN]},
+      { title: "Category Sizes", url: "/products/category-sizes", icon: Package , roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN]},
     ]
   },
   {

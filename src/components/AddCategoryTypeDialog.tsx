@@ -159,9 +159,9 @@ export default function AddCategoryTypeDialog({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
-          <DialogTitle>Add Category Type</DialogTitle>
+          <DialogTitle>Add Category Size</DialogTitle>
           <DialogDescription>
-            Create a new category type with sizing options
+            Create a new category size with sizing options
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
