@@ -101,6 +101,14 @@ export class ProductsAPI {
   }
 
   /**
+   * Update product with FormData (supports file upload)
+   */
+  static async updateProduct(id: number, formData: FormData): Promise<ProductResponse> {
+    const response = await apiClient.put<ProductResponse>(`${this.baseUrl}/${id}`, formData);
+    return response.data;
+  }
+
+  /**
    * Delete product
    */
   static async deleteProduct(id: number): Promise<ApiResponse> {

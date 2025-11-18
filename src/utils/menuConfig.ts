@@ -16,24 +16,24 @@ export const menuConfig: MenuItem[] = [
     title: "Overview", 
     url: "/dashboard", // Changed from "/" to match our routing
     icon: LayoutDashboard,
-    roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN], // Everyone can see
+    roles: [ROLES.DATA_STEWARD,  ROLES.SUPER_ADMIN], // Everyone can see
   },
   {
     title: "Products",
     url: "/products",
     icon: Package,
-    roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN], // Only editors and above
+    roles: [ROLES.DATA_STEWARD,  ROLES.SUPER_ADMIN], // Only editors and above
     subItems: [
       { title: "All Products", url: "/products", icon: Package },
-      { title: "Categories", url: "/products/categories", icon: Package , roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN]},
-      { title: "Category Sizes", url: "/products/category-sizes", icon: Package , roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN]},
+      { title: "Categories", url: "/products/categories", icon: Package , roles: [ROLES.DATA_STEWARD,  ROLES.SUPER_ADMIN]},
+      { title: "Category Sizes", url: "/products/category-sizes", icon: Package , roles: [ROLES.DATA_STEWARD,  ROLES.SUPER_ADMIN]},
     ]
   },
   {
     title: "Orders",
     url: "/orders",
     icon: ShoppingCart,
-    roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN], // Only editors and above
+    roles: [ROLES.DATA_STEWARD,  ROLES.SUPER_ADMIN], // Only editors and above
     subItems: [
       { title: "All Orders", url: "/orders", icon: ShoppingCart },
     ]
@@ -42,7 +42,7 @@ export const menuConfig: MenuItem[] = [
     title: "Users",
     url: "/users",
     icon: Users,
-    roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN],
+    roles: [ROLES.DATA_STEWARD,  ROLES.SUPER_ADMIN],
     subItems: [
       { title: "All Users", url: "/users", icon: Users },
       { title: "Employees", url: "/users/employees", icon: Users },
@@ -54,12 +54,12 @@ export const menuConfig: MenuItem[] = [
     title: "Analytics", 
     url: "/analytics", 
     icon: BarChart3,
-    roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN], // Only admins can see
+    roles: [ROLES.DATA_STEWARD,  ROLES.SUPER_ADMIN], // Only admins can see
   },
   { 
     title: "Settings", 
     url: "/settings", 
     icon: Settings,
-    roles: [ROLES.DATA_STEWARD, ROLES.SUPPLIER, ROLES.SUPER_ADMIN], // Only admins can see
+    roles: [ROLES.DATA_STEWARD,  ROLES.SUPER_ADMIN], // Only admins can see
   },
 ];

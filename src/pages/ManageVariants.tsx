@@ -49,6 +49,7 @@ import { ProfitMarginDisplay } from "@/components/ProfitMarginDisplay";
 import { ProductSummaryCard } from "@/components/ProductSummaryCard";
 import { BulkEditPanel } from "@/components/BulkEditPanel";
 import { DeleteVariantDialog } from "@/components/DeleteVariantDialog";
+import EditProductDialog from "@/components/EditProductDialog";
 
 interface VariantEdit {
   id: number;
@@ -103,6 +104,7 @@ export default function ManageVariants() {
     quantity: "",
     sku: "",
   });
+  const [editProductDialogOpen, setEditProductDialogOpen] = useState(false);
 
   // Generate SKU automatically based on product, color, and size
   const generateSKU = (color: string, size: string) => {
@@ -562,17 +564,21 @@ export default function ManageVariants() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="outline" onClick={() => navigate("/products")}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
+        <div className="flex items-center gap-3">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => navigate("/products")}
+            className="hover:bg-muted"
+          >
+            <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
             <h1 className="text-3xl font-semibold tracking-tight">
-              Manage Variants
+              Edit Product & Manage Stock
             </h1>
             <p className="text-muted-foreground">
-              Edit and manage variants for:{" "}
+              Edit product details and manage variant stocks for:{" "}
               <span className="font-medium">{product.name}</span>
             </p>
           </div>
@@ -596,6 +602,7 @@ export default function ManageVariants() {
         product={product}
         sizeOptions={sizeOptions}
         totalVariants={variants.length}
+        onEditClick={() => setEditProductDialogOpen(true)}
       />
 
       <Separator />
@@ -604,7 +611,7 @@ export default function ManageVariants() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold">
-            Product Variants ({variants.length})
+            Variant Stock Management ({variants.length})
           </h2>
           <div className="flex items-center gap-2">
             {bulkEditMode && selectedVariants.size > 0 && (
@@ -1243,6 +1250,16 @@ export default function ManageVariants() {
         onOpenChange={setDeleteDialogOpen}
         onConfirm={handleDeleteVariant}
       />
+
+      {/* Edit Product Dialog */}
+      {product && (
+        <EditProductDialog
+          open={editProductDialogOpen}
+          onOpenChange={setEditProductDialogOpen}
+          product={product}
+          onProductUpdated={fetchProductDetails}
+        />
+      )}
     </div>
   );
 }

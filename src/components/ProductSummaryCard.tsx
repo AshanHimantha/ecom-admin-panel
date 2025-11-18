@@ -1,15 +1,18 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { Product } from "@/api/productsApi";
+import { Pencil } from "lucide-react";
 
 interface ProductSummaryCardProps {
   product: Product;
   sizeOptions: string[];
   totalVariants: number;
+  onEditClick: () => void;
 }
 
-export function ProductSummaryCard({ product, sizeOptions, totalVariants }: ProductSummaryCardProps) {
+export function ProductSummaryCard({ product, sizeOptions, totalVariants, onEditClick }: ProductSummaryCardProps) {
   const mainImage = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : null;
 
   return (
@@ -31,9 +34,15 @@ export function ProductSummaryCard({ product, sizeOptions, totalVariants }: Prod
         {/* Product Details */}
         <div className="flex-1 space-y-6">
           {/* Product Name - Full Width */}
-          <div className="border-b pb-3">
-            <Label className="text-xs text-muted-foreground uppercase tracking-wide">Product Name</Label>
-            <h2 className="text-2xl font-bold mt-1 text-foreground">{product.name}</h2>
+          <div className="border-b pb-3 flex items-center justify-between">
+			<div><Label className="text-xs text-muted-foreground uppercase tracking-wide">Product Name</Label>
+            <h2 className="text-2xl font-bold mt-1 text-foreground">{product.name}</h2></div>
+            <div>
+				{/* edit product */}
+				<Button variant="outline" size="icon" onClick={onEditClick}>
+					<Pencil className="h-4 w-4" />
+				</Button>
+			</div>
           </div>
 
           {/* Details Grid */}
